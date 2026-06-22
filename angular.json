@@ -30,6 +30,7 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/angular-task-tracker/",
               "budgets": [
                 {
                   "type": "initial",
