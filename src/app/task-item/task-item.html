@@ -10,12 +10,12 @@
     <span class="task-number">{{ position() }}.</span>
     <span class="task-title" [class.done]="task().done">{{ task().title }}</span>
   </label>
-  <div class="task-actions">
+  <div class="task-actions" [class.reminder-active]="bellActive()">
     <button
       type="button"
       class="reminder-btn"
-      [class.has-reminder]="isReminderEnabled()"
-      [attr.aria-label]="isReminderEnabled() ? 'Edit reminder' : 'Set reminder'"
+      [class.has-reminder]="bellActive()"
+      [attr.aria-label]="bellActive() ? 'Edit reminder' : 'Set reminder'"
       (click)="openReminderDialog()"
     >
       <svg class="bell-icon" viewBox="0 0 24 24" aria-hidden="true">

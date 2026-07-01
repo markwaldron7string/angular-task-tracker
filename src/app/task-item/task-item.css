@@ -202,7 +202,8 @@
   border-color: var(--red);
 }
 
-:host:hover .task-actions {
+:host:hover .task-actions,
+.task-actions.reminder-active {
   opacity: 1;
 }
 

@@ -8,12 +8,19 @@ export interface Task {
   reminderAt?: string;
 }
 
+export function isReminderEnabled(task: Task): boolean {
+  if (task.reminderEnabled !== undefined) {
+    return task.reminderEnabled;
+  }
+  return !!task.reminderAt;
+}
+
+const STORAGE_KEY = 'tasks';
+
 export interface ReminderSettings {
   enabled: boolean;
   reminderAt: string | null;
 }
-
-const STORAGE_KEY = 'tasks';
 
 function loadTasks(): Task[] {
   const saved = localStorage.getItem(STORAGE_KEY);
