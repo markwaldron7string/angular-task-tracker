@@ -4,6 +4,7 @@ export interface Task {
   id: number;
   title: string;
   done: boolean;
+  reminderAt?: string;
 }
 
 const STORAGE_KEY = 'tasks';
@@ -57,6 +58,16 @@ export class TaskStore {
 
   removeTask(id: number) {
     this.tasks.update(current => current.filter(task => task.id !== id));
+  }
+
+  setReminder(id: number, reminderAt: string | null) {
+    this.tasks.update(current =>
+      current.map(task =>
+        task.id === id
+          ? { ...task, reminderAt: reminderAt ?? undefined }
+          : task
+      )
+    );
   }
 
   clearTasks() {
