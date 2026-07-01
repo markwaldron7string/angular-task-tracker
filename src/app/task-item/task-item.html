@@ -14,7 +14,7 @@
     <button
       type="button"
       class="reminder-btn"
-      [class.is-on]="bellActive()"
+      [class.reminder-on]="bellActive()"
       [attr.aria-pressed]="bellActive()"
       [attr.aria-label]="bellActive() ? 'Reminder on' : 'Reminder off'"
       (click)="openReminderDialog()"

@@ -39,3 +39,38 @@ button {
 input {
   font-family: inherit;
 }
+
+.reminder-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  padding: 0;
+  border: 2px solid var(--reminder-off-border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--reminder-off-color);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+
+.reminder-btn.reminder-on {
+  color: #ffffff;
+  border-color: var(--reminder-on-border);
+  background: var(--reminder-on-border);
+  box-shadow: 0 0 0 3px var(--reminder-on-ring);
+}
+
+.btn-reminders {
+  background: var(--surface);
+  color: var(--reminder-off-color);
+  border: 2px solid var(--reminder-off-border);
+}
+
+.btn-reminders.reminder-on {
+  color: #ffffff;
+  border-color: var(--reminder-on-border);
+  background: var(--reminder-on-border);
+  box-shadow: 0 0 0 3px var(--reminder-on-ring);
+}

@@ -1,5 +1,5 @@
 import { Component, computed, HostListener, inject, input, output, signal } from '@angular/core';
-import { isBellOn, isReminderEnabled, Task, TaskStore } from '../task-store';
+import { Task, TaskStore } from '../task-store';
 
 @Component({
   selector: 'app-task-item',
@@ -20,19 +20,12 @@ export class TaskItem {
   draftEnabled = signal(true);
   draftReminderAt = signal('');
 
-  private taskState = computed(() => {
-    const currentTask = this.task();
-    return this.store.tasks().find(task => task.id === currentTask.id) ?? currentTask;
-  });
-
   bellActive = computed(() => {
-    const masterOn = this.store.remindersMasterEnabled();
-
     if (this.showReminderDialog()) {
-      return masterOn && this.draftEnabled();
+      return this.store.remindersMasterEnabled() && this.draftEnabled();
     }
 
-    return isBellOn(this.taskState(), masterOn);
+    return this.store.isBellOn(this.task().id);
   });
 
   onToggle() { this.toggle.emit(this.task().id); }
@@ -47,12 +40,8 @@ export class TaskItem {
   }
 
   openReminderDialog() {
-    const currentTask = this.taskState();
-    this.draftEnabled.set(
-      currentTask.reminderEnabled !== undefined
-        ? currentTask.reminderEnabled
-        : true
-    );
+    const currentTask = this.task();
+    this.draftEnabled.set(currentTask.reminderEnabled);
     this.draftReminderAt.set(
       this.toDatetimeLocalValue(currentTask.reminderAt) || this.defaultReminderAt()
     );
