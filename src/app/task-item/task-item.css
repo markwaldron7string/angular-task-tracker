@@ -69,28 +69,6 @@
   flex-shrink: 0;
 }
 
-.reminder-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.85rem;
-  height: 1.85rem;
-  padding: 0;
-  border: 1.5px solid var(--reminder-off-border);
-  border-radius: 999px;
-  background: var(--surface);
-  color: var(--reminder-off-color);
-  cursor: pointer;
-  transition: border-color 0.15s, color 0.15s, background 0.15s, box-shadow 0.15s;
-}
-
-.reminder-btn.is-on {
-  color: var(--reminder-on-color);
-  border-color: var(--reminder-on-border);
-  background: var(--reminder-on-bg);
-  box-shadow: 0 0 0 2px var(--reminder-on-ring);
-}
-
 .bell-icon {
   width: 0.95rem;
   height: 0.95rem;

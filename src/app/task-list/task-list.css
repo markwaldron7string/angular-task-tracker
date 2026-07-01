@@ -99,19 +99,6 @@ h2 {
   border-color: var(--red-border);
 }
 
-.btn-reminders {
-  background: var(--surface);
-  color: var(--reminder-off-color);
-  border: 1.5px solid var(--reminder-off-border);
-}
-
-.btn-reminders.is-on {
-  color: var(--reminder-on-color);
-  border-color: var(--reminder-on-border);
-  background: var(--reminder-on-bg);
-  box-shadow: 0 0 0 2px var(--reminder-on-ring);
-}
-
 .task-list {
   display: flex;
   flex-direction: column;

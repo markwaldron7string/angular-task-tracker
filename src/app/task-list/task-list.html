@@ -5,7 +5,7 @@
       <button
         type="button"
         class="btn btn-reminders"
-        [class.is-on]="store.remindersMasterEnabled()"
+        [class.reminder-on]="store.remindersMasterEnabled()"
         (click)="store.toggleRemindersMaster()"
       >
         {{ store.remindersMasterEnabled() ? 'Reminders on' : 'Reminders off' }}

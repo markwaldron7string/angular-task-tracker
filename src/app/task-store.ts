@@ -4,7 +4,7 @@ export interface Task {
   id: number;
   title: string;
   done: boolean;
-  reminderEnabled?: boolean;
+  reminderEnabled: boolean;
   reminderAt?: string;
 }
 
@@ -12,12 +12,8 @@ export function isReminderEnabled(task: Task): boolean {
   return task.reminderEnabled === true;
 }
 
-export function isBellOn(task: Task, masterRemindersEnabled: boolean): boolean {
-  return masterRemindersEnabled && isReminderEnabled(task);
-}
-
 const STORAGE_KEY = 'tasks';
-const REMINDERS_MASTER_KEY = 'remindersMasterEnabled';
+const REMINDERS_MASTER_KEY = 'remindersMasterOn';
 
 export interface ReminderSettings {
   enabled: boolean;
@@ -32,15 +28,25 @@ function loadRemindersMasterEnabled(): boolean {
   return saved === 'true';
 }
 
+function normalizeTask(task: Partial<Task> & Pick<Task, 'id' | 'title' | 'done'>): Task {
+  return {
+    id: task.id,
+    title: task.title,
+    done: task.done,
+    reminderEnabled: task.reminderEnabled === true,
+    reminderAt: task.reminderAt,
+  };
+}
+
 function loadTasks(): Task[] {
   const saved = localStorage.getItem(STORAGE_KEY);
   if (saved) {
-    return JSON.parse(saved);
+    return JSON.parse(saved).map(normalizeTask);
   }
   return [
-    { id: 1, title: 'Buy groceries', done: false },
-    { id: 2, title: 'Walk the dog', done: false },
-    { id: 3, title: 'Learn Angular', done: false },
+    { id: 1, title: 'Buy groceries', done: false, reminderEnabled: false },
+    { id: 2, title: 'Walk the dog', done: false, reminderEnabled: false },
+    { id: 3, title: 'Learn Angular', done: false, reminderEnabled: false },
   ];
 }
 
@@ -64,9 +70,23 @@ export class TaskStore {
     });
   }
 
+  isBellOn(taskId: number): boolean {
+    if (!this.remindersMasterEnabled()) {
+      return false;
+    }
+
+    const task = this.tasks().find(item => item.id === taskId);
+    return task?.reminderEnabled === true;
+  }
+
   addTask(title: string) {
     if (title.trim() === '') return;
-    const newTask: Task = { id: this.nextId++, title, done: false };
+    const newTask: Task = {
+      id: this.nextId++,
+      title,
+      done: false,
+      reminderEnabled: false,
+    };
     this.tasks.update(current => [...current, newTask]);
   }
 
