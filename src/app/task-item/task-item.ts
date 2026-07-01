@@ -1,4 +1,4 @@
-import { Component, computed, effect, HostListener, inject, input, output, signal } from '@angular/core';
+import { Component, computed, HostListener, inject, input, output, signal } from '@angular/core';
 import { isReminderEnabled, ReminderSettings, Task, TaskStore } from '../task-store';
 
 @Component({
@@ -20,7 +20,11 @@ export class TaskItem {
   showReminderDialog = signal(false);
   draftEnabled = signal(true);
   draftReminderAt = signal('');
-  pendingBellActive = signal<boolean | null>(null);
+
+  private taskState = computed(() => {
+    const currentTask = this.task();
+    return this.store.tasks().find(task => task.id === currentTask.id) ?? currentTask;
+  });
 
   bellActive = computed(() => {
     if (!this.store.remindersMasterEnabled()) {
@@ -31,23 +35,7 @@ export class TaskItem {
       return this.draftEnabled();
     }
 
-    const pending = this.pendingBellActive();
-    if (pending !== null) {
-      return pending;
-    }
-
-    return isReminderEnabled(this.task());
-  });
-
-  private syncPendingBell = effect(() => {
-    const pending = this.pendingBellActive();
-    if (pending === null) {
-      return;
-    }
-
-    if (isReminderEnabled(this.task()) === pending) {
-      this.pendingBellActive.set(null);
-    }
+    return isReminderEnabled(this.taskState());
   });
 
   onToggle() { this.toggle.emit(this.task().id); }
@@ -62,7 +50,7 @@ export class TaskItem {
   }
 
   openReminderDialog() {
-    const currentTask = this.task();
+    const currentTask = this.taskState();
     this.draftEnabled.set(
       currentTask.reminderEnabled !== undefined
         ? currentTask.reminderEnabled
@@ -75,9 +63,7 @@ export class TaskItem {
   }
 
   closeReminderDialog() {
-    const enabled = this.draftEnabled();
     this.saveReminderSettings();
-    this.pendingBellActive.set(enabled);
     this.showReminderDialog.set(false);
   }
 

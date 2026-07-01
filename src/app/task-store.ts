@@ -9,8 +9,11 @@ export interface Task {
 }
 
 export function isReminderEnabled(task: Task): boolean {
-  if (task.reminderEnabled !== undefined) {
-    return task.reminderEnabled;
+  if (task.reminderEnabled === true) {
+    return true;
+  }
+  if (task.reminderEnabled === false) {
+    return false;
   }
   return !!task.reminderAt;
 }
