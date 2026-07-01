@@ -4,9 +4,33 @@ export interface Task {
   id: number;
   title: string;
   done: boolean;
+  reminderEnabled?: boolean;
+  reminderAt?: string;
+}
+
+export function isReminderEnabled(task: Task): boolean {
+  return task.reminderEnabled === true;
+}
+
+export function isBellOn(task: Task, masterRemindersEnabled: boolean): boolean {
+  return masterRemindersEnabled && isReminderEnabled(task);
 }
 
 const STORAGE_KEY = 'tasks';
+const REMINDERS_MASTER_KEY = 'remindersMasterEnabled';
+
+export interface ReminderSettings {
+  enabled: boolean;
+  reminderAt: string | null;
+}
+
+function loadRemindersMasterEnabled(): boolean {
+  const saved = localStorage.getItem(REMINDERS_MASTER_KEY);
+  if (saved === null) {
+    return true;
+  }
+  return saved === 'true';
+}
 
 function loadTasks(): Task[] {
   const saved = localStorage.getItem(STORAGE_KEY);
@@ -23,6 +47,7 @@ function loadTasks(): Task[] {
 @Injectable({ providedIn: 'root' })
 export class TaskStore {
   tasks = signal<Task[]>(loadTasks());
+  remindersMasterEnabled = signal(loadRemindersMasterEnabled());
 
   private nextId = Math.max(0, ...this.tasks().map(task => task.id)) + 1;
 
@@ -33,6 +58,9 @@ export class TaskStore {
   constructor() {
     effect(() => {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(this.tasks()));
+    });
+    effect(() => {
+      localStorage.setItem(REMINDERS_MASTER_KEY, String(this.remindersMasterEnabled()));
     });
   }
 
@@ -57,6 +85,24 @@ export class TaskStore {
 
   removeTask(id: number) {
     this.tasks.update(current => current.filter(task => task.id !== id));
+  }
+
+  setReminder(id: number, settings: ReminderSettings) {
+    this.tasks.update(current =>
+      current.map(task =>
+        task.id === id
+          ? {
+              ...task,
+              reminderEnabled: settings.enabled,
+              reminderAt: settings.reminderAt ?? task.reminderAt ?? undefined,
+            }
+          : task
+      )
+    );
+  }
+
+  toggleRemindersMaster() {
+    this.remindersMasterEnabled.update(enabled => !enabled);
   }
 
   clearTasks() {

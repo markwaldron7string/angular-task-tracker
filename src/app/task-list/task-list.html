@@ -1,7 +1,17 @@
 <div class="card">
   <div class="card-header">
     <h2>All Tasks</h2>
-    <app-task-summary />
+    <div class="card-header-actions">
+      <button
+        type="button"
+        class="btn btn-reminders"
+        [class.is-on]="store.remindersMasterEnabled()"
+        (click)="store.toggleRemindersMaster()"
+      >
+        {{ store.remindersMasterEnabled() ? 'Reminders on' : 'Reminders off' }}
+      </button>
+      <app-task-summary />
+    </div>
   </div>
 
   <div class="task-stats">
