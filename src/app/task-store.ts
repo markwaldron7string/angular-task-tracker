@@ -9,13 +9,11 @@ export interface Task {
 }
 
 export function isReminderEnabled(task: Task): boolean {
-  if (task.reminderEnabled === true) {
-    return true;
-  }
-  if (task.reminderEnabled === false) {
-    return false;
-  }
-  return !!task.reminderAt;
+  return task.reminderEnabled === true;
+}
+
+export function isBellOn(task: Task, masterRemindersEnabled: boolean): boolean {
+  return masterRemindersEnabled && isReminderEnabled(task);
 }
 
 const STORAGE_KEY = 'tasks';
@@ -96,7 +94,7 @@ export class TaskStore {
           ? {
               ...task,
               reminderEnabled: settings.enabled,
-              reminderAt: settings.reminderAt ?? undefined,
+              reminderAt: settings.reminderAt ?? task.reminderAt ?? undefined,
             }
           : task
       )

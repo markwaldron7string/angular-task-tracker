@@ -1,5 +1,5 @@
 import { Component, computed, HostListener, inject, input, output, signal } from '@angular/core';
-import { isReminderEnabled, ReminderSettings, Task, TaskStore } from '../task-store';
+import { isBellOn, isReminderEnabled, Task, TaskStore } from '../task-store';
 
 @Component({
   selector: 'app-task-item',
@@ -14,7 +14,6 @@ export class TaskItem {
   toggle = output<number>();
   remove = output<number>();
   edit = output<{ id: number; title: string }>();
-  reminder = output<{ id: number } & ReminderSettings>();
 
   isEditing = signal(false);
   showReminderDialog = signal(false);
@@ -27,15 +26,13 @@ export class TaskItem {
   });
 
   bellActive = computed(() => {
-    if (!this.store.remindersMasterEnabled()) {
-      return false;
-    }
+    const masterOn = this.store.remindersMasterEnabled();
 
     if (this.showReminderDialog()) {
-      return this.draftEnabled();
+      return masterOn && this.draftEnabled();
     }
 
-    return isReminderEnabled(this.taskState());
+    return isBellOn(this.taskState(), masterOn);
   });
 
   onToggle() { this.toggle.emit(this.task().id); }
@@ -63,7 +60,12 @@ export class TaskItem {
   }
 
   closeReminderDialog() {
-    this.saveReminderSettings();
+    this.store.setReminder(this.task().id, {
+      enabled: this.draftEnabled(),
+      reminderAt: this.draftReminderAt()
+        ? new Date(this.draftReminderAt()).toISOString()
+        : null,
+    });
     this.showReminderDialog.set(false);
   }
 
@@ -82,15 +84,6 @@ export class TaskItem {
     if (this.showReminderDialog()) {
       this.closeReminderDialog();
     }
-  }
-
-  private saveReminderSettings() {
-    const reminderAt = this.draftReminderAt();
-    this.reminder.emit({
-      id: this.task().id,
-      enabled: this.draftEnabled(),
-      reminderAt: reminderAt ? new Date(reminderAt).toISOString() : null,
-    });
   }
 
   private toDatetimeLocalValue(isoDate?: string): string {

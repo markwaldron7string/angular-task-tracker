@@ -53,6 +53,13 @@
   color: var(--text-faint);
 }
 
+.task-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
 .task-actions {
   display: flex;
   align-items: center;
@@ -69,29 +76,19 @@
   width: 1.85rem;
   height: 1.85rem;
   padding: 0;
-  border: 1.5px solid var(--border);
+  border: 1.5px solid var(--reminder-off-border);
   border-radius: 999px;
   background: var(--surface);
-  color: var(--text-faint);
+  color: var(--reminder-off-color);
   cursor: pointer;
   transition: border-color 0.15s, color 0.15s, background 0.15s, box-shadow 0.15s;
 }
 
-.reminder-btn:hover {
-  color: var(--text-muted);
-  border-color: var(--text-faint);
-  background: var(--red-light);
-}
-
-.reminder-btn.has-reminder {
-  color: var(--red);
-  border-color: var(--red);
-  box-shadow: 0 0 0 1px var(--red-border);
-}
-
-.reminder-btn.has-reminder:hover {
-  border-color: var(--red-dark);
-  box-shadow: 0 0 0 2px var(--red-border);
+.reminder-btn.is-on {
+  color: var(--reminder-on-color);
+  border-color: var(--reminder-on-border);
+  background: var(--reminder-on-bg);
+  box-shadow: 0 0 0 2px var(--reminder-on-ring);
 }
 
 .bell-icon {
@@ -202,8 +199,7 @@
   border-color: var(--red);
 }
 
-:host:hover .task-actions,
-.task-actions.reminder-active {
+:host:hover .task-actions {
   opacity: 1;
 }
 

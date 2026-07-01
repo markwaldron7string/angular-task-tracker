@@ -5,7 +5,7 @@
       <button
         type="button"
         class="btn btn-reminders"
-        [class.btn-reminders-on]="store.remindersMasterEnabled()"
+        [class.is-on]="store.remindersMasterEnabled()"
         (click)="store.toggleRemindersMaster()"
       >
         {{ store.remindersMasterEnabled() ? 'Reminders on' : 'Reminders off' }}
@@ -40,7 +40,6 @@
         (toggle)="store.toggleTask($event)"
         (remove)="store.removeTask($event)"
         (edit)="store.editTask($event.id, $event.title)"
-        (reminder)="store.setReminder($event.id, { enabled: $event.enabled, reminderAt: $event.reminderAt })"
       />
     } @empty {
       <div class="empty-state">No tasks yet.</div>

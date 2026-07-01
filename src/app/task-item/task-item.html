@@ -10,20 +10,23 @@
     <span class="task-number">{{ position() }}.</span>
     <span class="task-title" [class.done]="task().done">{{ task().title }}</span>
   </label>
-  <div class="task-actions" [class.reminder-active]="bellActive()">
+  <div class="task-row-actions">
     <button
       type="button"
       class="reminder-btn"
-      [class.has-reminder]="bellActive()"
-      [attr.aria-label]="bellActive() ? 'Edit reminder' : 'Set reminder'"
+      [class.is-on]="bellActive()"
+      [attr.aria-pressed]="bellActive()"
+      [attr.aria-label]="bellActive() ? 'Reminder on' : 'Reminder off'"
       (click)="openReminderDialog()"
     >
       <svg class="bell-icon" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22Zm7-6V11a7 7 0 1 0-14 0v5l-2 2v1h18v-1l-2-2Z" />
       </svg>
     </button>
-    <button type="button" class="action-btn" (click)="startEditing()">Edit</button>
-    <button type="button" class="action-btn delete-btn" (click)="onRemove()">Delete</button>
+    <div class="task-actions">
+      <button type="button" class="action-btn" (click)="startEditing()">Edit</button>
+      <button type="button" class="action-btn delete-btn" (click)="onRemove()">Delete</button>
+    </div>
   </div>
 }
 

@@ -15,6 +15,12 @@
   --border: #E0E0E0;
   --border-light: #F0F0F0;
   --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --reminder-off-border: #E0E0E0;
+  --reminder-off-color: #757575;
+  --reminder-on-border: #DD0031;
+  --reminder-on-color: #DD0031;
+  --reminder-on-bg: #FFEBEE;
+  --reminder-on-ring: #FFCDD2;
 }
 
 body {

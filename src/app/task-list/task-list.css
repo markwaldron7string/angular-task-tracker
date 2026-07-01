@@ -100,26 +100,16 @@ h2 {
 }
 
 .btn-reminders {
-  background: transparent;
-  color: var(--text-muted);
-  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--reminder-off-color);
+  border: 1.5px solid var(--reminder-off-border);
 }
 
-.btn-reminders:hover {
-  background: var(--red-light);
-  color: var(--red-dark);
-  border-color: var(--red-border);
-}
-
-.btn-reminders-on {
-  color: var(--red);
-  border-color: var(--red);
-  box-shadow: 0 0 0 1px var(--red-border);
-}
-
-.btn-reminders-on:hover {
-  border-color: var(--red-dark);
-  box-shadow: 0 0 0 2px var(--red-border);
+.btn-reminders.is-on {
+  color: var(--reminder-on-color);
+  border-color: var(--reminder-on-border);
+  background: var(--reminder-on-bg);
+  box-shadow: 0 0 0 2px var(--reminder-on-ring);
 }
 
 .task-list {
