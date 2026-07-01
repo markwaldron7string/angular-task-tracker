@@ -1,5 +1,5 @@
-import { Component, computed, HostListener, input, output, signal } from '@angular/core';
-import { isReminderEnabled, ReminderSettings, Task } from '../task-store';
+import { Component, computed, effect, HostListener, inject, input, output, signal } from '@angular/core';
+import { isReminderEnabled, ReminderSettings, Task, TaskStore } from '../task-store';
 
 @Component({
   selector: 'app-task-item',
@@ -7,6 +7,8 @@ import { isReminderEnabled, ReminderSettings, Task } from '../task-store';
   styleUrl: './task-item.css',
 })
 export class TaskItem {
+  private store = inject(TaskStore);
+
   task = input.required<Task>();
   position = input<number>();
   toggle = output<number>();
@@ -16,14 +18,36 @@ export class TaskItem {
 
   isEditing = signal(false);
   showReminderDialog = signal(false);
-  draftEnabled = signal(false);
+  draftEnabled = signal(true);
   draftReminderAt = signal('');
+  pendingBellActive = signal<boolean | null>(null);
 
   bellActive = computed(() => {
+    if (!this.store.remindersMasterEnabled()) {
+      return false;
+    }
+
     if (this.showReminderDialog()) {
       return this.draftEnabled();
     }
+
+    const pending = this.pendingBellActive();
+    if (pending !== null) {
+      return pending;
+    }
+
     return isReminderEnabled(this.task());
+  });
+
+  private syncPendingBell = effect(() => {
+    const pending = this.pendingBellActive();
+    if (pending === null) {
+      return;
+    }
+
+    if (isReminderEnabled(this.task()) === pending) {
+      this.pendingBellActive.set(null);
+    }
   });
 
   onToggle() { this.toggle.emit(this.task().id); }
@@ -39,7 +63,11 @@ export class TaskItem {
 
   openReminderDialog() {
     const currentTask = this.task();
-    this.draftEnabled.set(isReminderEnabled(currentTask));
+    this.draftEnabled.set(
+      currentTask.reminderEnabled !== undefined
+        ? currentTask.reminderEnabled
+        : true
+    );
     this.draftReminderAt.set(
       this.toDatetimeLocalValue(currentTask.reminderAt) || this.defaultReminderAt()
     );
@@ -47,7 +75,9 @@ export class TaskItem {
   }
 
   closeReminderDialog() {
+    const enabled = this.draftEnabled();
     this.saveReminderSettings();
+    this.pendingBellActive.set(enabled);
     this.showReminderDialog.set(false);
   }
 
