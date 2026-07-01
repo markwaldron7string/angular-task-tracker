@@ -100,16 +100,106 @@
   fill: currentColor;
 }
 
-.reminder-input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
+.reminder-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(33, 33, 33, 0.35);
+}
+
+.reminder-dialog {
+  width: min(100%, 22rem);
+  padding: 1rem 1rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.reminder-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.reminder-dialog-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.reminder-close-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
   padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.reminder-close-btn:hover {
+  color: var(--text);
+  background: var(--border-light);
+}
+
+.reminder-enable-label {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.85rem;
+  font-size: 0.92rem;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.reminder-enable-label input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--red);
+  cursor: pointer;
+}
+
+.reminder-datetime-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.reminder-datetime-input {
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.92rem;
+  color: var(--text);
+  background: var(--surface);
+}
+
+.reminder-datetime-input:disabled {
+  color: var(--text-faint);
+  background: var(--border-light);
+  cursor: not-allowed;
+}
+
+.reminder-datetime-input:focus {
+  outline: none;
+  border-color: var(--red);
 }
 
 :host:hover .task-actions {

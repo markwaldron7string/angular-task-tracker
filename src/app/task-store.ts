@@ -4,7 +4,13 @@ export interface Task {
   id: number;
   title: string;
   done: boolean;
+  reminderEnabled?: boolean;
   reminderAt?: string;
+}
+
+export interface ReminderSettings {
+  enabled: boolean;
+  reminderAt: string | null;
 }
 
 const STORAGE_KEY = 'tasks';
@@ -60,11 +66,15 @@ export class TaskStore {
     this.tasks.update(current => current.filter(task => task.id !== id));
   }
 
-  setReminder(id: number, reminderAt: string | null) {
+  setReminder(id: number, settings: ReminderSettings) {
     this.tasks.update(current =>
       current.map(task =>
         task.id === id
-          ? { ...task, reminderAt: reminderAt ?? undefined }
+          ? {
+              ...task,
+              reminderEnabled: settings.enabled,
+              reminderAt: settings.reminderAt ?? undefined,
+            }
           : task
       )
     );

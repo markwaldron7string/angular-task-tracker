@@ -1,9 +1,9 @@
-import { Component, input, output, signal } from '@angular/core';
-import { Task } from '../task-store';
+import { Component, HostListener, input, output, signal } from '@angular/core';
+import { ReminderSettings, Task } from '../task-store';
 
 @Component({
   selector: 'app-task-item',
-templateUrl: './task-item.html',
+  templateUrl: './task-item.html',
   styleUrl: './task-item.css',
 })
 export class TaskItem {
@@ -12,21 +12,19 @@ export class TaskItem {
   toggle = output<number>();
   remove = output<number>();
   edit = output<{ id: number; title: string }>();
-  reminder = output<{ id: number; reminderAt: string | null }>();
+  reminder = output<{ id: number } & ReminderSettings>();
 
   isEditing = signal(false);
+  showReminderDialog = signal(false);
+  draftEnabled = signal(false);
+  draftReminderAt = signal('');
 
-  hasReminder(): boolean {
-    return !!this.task().reminderAt;
-  }
-
-  reminderInputValue(): string {
-    const reminderAt = this.task().reminderAt;
-    if (!reminderAt) return '';
-
-    const date = new Date(reminderAt);
-    const pad = (value: number) => String(value).padStart(2, '0');
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  isReminderEnabled(): boolean {
+    const currentTask = this.task();
+    if (currentTask.reminderEnabled !== undefined) {
+      return currentTask.reminderEnabled;
+    }
+    return !!currentTask.reminderAt;
   }
 
   onToggle() { this.toggle.emit(this.task().id); }
@@ -40,14 +38,58 @@ export class TaskItem {
     this.isEditing.set(false);
   }
 
-  openReminderPicker(input: HTMLInputElement) {
-    input.showPicker();
+  openReminderDialog() {
+    const currentTask = this.task();
+    this.draftEnabled.set(this.isReminderEnabled());
+    this.draftReminderAt.set(
+      this.toDatetimeLocalValue(currentTask.reminderAt) || this.defaultReminderAt()
+    );
+    this.showReminderDialog.set(true);
   }
 
-  onReminderChange(value: string) {
+  closeReminderDialog() {
+    this.saveReminderSettings();
+    this.showReminderDialog.set(false);
+  }
+
+  onDraftEnabledChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.draftEnabled.set(input.checked);
+  }
+
+  onDraftReminderAtChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.draftReminderAt.set(input.value);
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscapeKey() {
+    if (this.showReminderDialog()) {
+      this.closeReminderDialog();
+    }
+  }
+
+  private saveReminderSettings() {
+    const reminderAt = this.draftReminderAt();
     this.reminder.emit({
       id: this.task().id,
-      reminderAt: value ? new Date(value).toISOString() : null,
+      enabled: this.draftEnabled(),
+      reminderAt: reminderAt ? new Date(reminderAt).toISOString() : null,
     });
+  }
+
+  private toDatetimeLocalValue(isoDate?: string): string {
+    if (!isoDate) return '';
+
+    const date = new Date(isoDate);
+    const pad = (value: number) => String(value).padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  }
+
+  private defaultReminderAt(): string {
+    const date = new Date();
+    date.setMinutes(0, 0, 0);
+    date.setHours(date.getHours() + 1);
+    return this.toDatetimeLocalValue(date.toISOString());
   }
 }

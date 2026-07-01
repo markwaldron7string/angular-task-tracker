@@ -14,22 +14,51 @@
     <button
       type="button"
       class="reminder-btn"
-      [class.has-reminder]="hasReminder()"
-      [attr.aria-label]="hasReminder() ? 'Edit reminder' : 'Set reminder'"
-      (click)="openReminderPicker(reminderInput)"
+      [class.has-reminder]="isReminderEnabled()"
+      [attr.aria-label]="isReminderEnabled() ? 'Edit reminder' : 'Set reminder'"
+      (click)="openReminderDialog()"
     >
       <svg class="bell-icon" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22Zm7-6V11a7 7 0 1 0-14 0v5l-2 2v1h18v-1l-2-2Z" />
       </svg>
     </button>
-    <input
-      #reminderInput
-      class="reminder-input"
-      type="datetime-local"
-      [value]="reminderInputValue()"
-      (change)="onReminderChange(reminderInput.value)"
-    />
     <button type="button" class="action-btn" (click)="startEditing()">Edit</button>
     <button type="button" class="action-btn delete-btn" (click)="onRemove()">Delete</button>
+  </div>
+}
+
+@if (showReminderDialog()) {
+  <div class="reminder-overlay" (click)="closeReminderDialog()">
+    <div
+      class="reminder-dialog"
+      role="dialog"
+      aria-labelledby="reminder-title-{{ task().id }}"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="reminder-dialog-header">
+        <h3 id="reminder-title-{{ task().id }}">Reminder</h3>
+        <button type="button" class="reminder-close-btn" aria-label="Close" (click)="closeReminderDialog()">×</button>
+      </div>
+
+      <label class="reminder-enable-label">
+        <input
+          type="checkbox"
+          [checked]="draftEnabled()"
+          (change)="onDraftEnabledChange($event)"
+        />
+        Enable reminder for this task
+      </label>
+
+      <label class="reminder-datetime-label">
+        Date &amp; time
+        <input
+          type="datetime-local"
+          class="reminder-datetime-input"
+          [disabled]="!draftEnabled()"
+          [value]="draftReminderAt()"
+          (input)="onDraftReminderAtChange($event)"
+        />
+      </label>
+    </div>
   </div>
 }

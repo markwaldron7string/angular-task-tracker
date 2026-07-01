@@ -30,7 +30,7 @@
         (toggle)="store.toggleTask($event)"
         (remove)="store.removeTask($event)"
         (edit)="store.editTask($event.id, $event.title)"
-        (reminder)="store.setReminder($event.id, $event.reminderAt)"
+        (reminder)="store.setReminder($event.id, { enabled: $event.enabled, reminderAt: $event.reminderAt })"
       />
     } @empty {
       <div class="empty-state">No tasks yet.</div>
