@@ -128,4 +128,15 @@ export class TaskStore {
   clearTasks() {
     this.tasks.set([]);
   }
+
+  reorderTasks(previousIndex: number, currentIndex: number) {
+    if (previousIndex === currentIndex) return;
+
+    this.tasks.update(current => {
+      const next = [...current];
+      const [moved] = next.splice(previousIndex, 1);
+      next.splice(currentIndex, 0, moved);
+      return next;
+    });
+  }
 }

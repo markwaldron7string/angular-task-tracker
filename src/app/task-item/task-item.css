@@ -5,7 +5,50 @@
   padding: 0.7rem 0.5rem;
   border-bottom: 1px solid var(--border-light);
   border-radius: 4px;
-  transition: background 0.12s;
+  transition: background 0.12s, transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+:host(.task-item-pressing) {
+  transform: scale(1.02);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  z-index: 2;
+}
+
+:host(.task-item-dragging) {
+  opacity: 0.35;
+}
+
+.task-drag-area {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: 1;
+  min-width: 0;
+  cursor: grab;
+  touch-action: none;
+}
+
+.task-drag-area:active {
+  cursor: grabbing;
+}
+
+.drag-handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.1rem;
+  color: var(--text-faint);
+  flex-shrink: 0;
+}
+
+.drag-handle svg {
+  width: 1rem;
+  height: 1rem;
+  fill: currentColor;
+}
+
+:host(:hover) .drag-handle {
+  color: var(--text-muted);
 }
 
 :host:last-child {
@@ -21,7 +64,7 @@
   align-items: center;
   gap: 0.65rem;
   flex: 1;
-  cursor: pointer;
+  cursor: inherit;
   min-width: 0;
 }
 
@@ -87,7 +130,7 @@
 }
 
 .reminder-dialog {
-  width: min(100%, 22rem);
+  width: min(100%, 24rem);
   padding: 1rem 1rem 1.1rem;
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -147,34 +190,6 @@
   height: 1rem;
   accent-color: var(--red);
   cursor: pointer;
-}
-
-.reminder-datetime-label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-}
-
-.reminder-datetime-input {
-  padding: 0.45rem 0.55rem;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  font-size: 0.92rem;
-  color: var(--text);
-  background: var(--surface);
-}
-
-.reminder-datetime-input:disabled {
-  color: var(--text-faint);
-  background: var(--border-light);
-  cursor: not-allowed;
-}
-
-.reminder-datetime-input:focus {
-  outline: none;
-  border-color: var(--red);
 }
 
 :host:hover .task-actions {

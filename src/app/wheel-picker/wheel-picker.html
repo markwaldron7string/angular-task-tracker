@@ -1,0 +1,17 @@
+<div class="wheel-picker" [class.disabled]="disabled()">
+  <div class="wheel-highlight" aria-hidden="true"></div>
+  <div
+    #wheel
+    class="wheel"
+    [attr.aria-label]="ariaLabel()"
+    [attr.aria-disabled]="disabled()"
+    tabindex="0"
+    (scroll)="onWheelScroll($event)"
+  >
+    <div class="wheel-spacer" aria-hidden="true"></div>
+    @for (option of options(); track option; let i = $index) {
+      <div class="wheel-item" [class.selected]="i === selectedIndex()">{{ option }}</div>
+    }
+    <div class="wheel-spacer" aria-hidden="true"></div>
+  </div>
+</div>
