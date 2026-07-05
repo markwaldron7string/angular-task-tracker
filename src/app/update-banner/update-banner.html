@@ -1,0 +1,12 @@
+@if (updateAvailable()) {
+  <div class="update-card" role="status" aria-live="polite">
+    <div class="update-card-content">
+      <p class="update-card-title">New update available</p>
+      <p class="update-card-text">A newer version of Task Tracker was deployed. Refresh to get the latest changes.</p>
+    </div>
+    <div class="update-card-actions">
+      <button type="button" class="btn btn-primary" (click)="reload()">Refresh</button>
+      <button type="button" class="btn btn-ghost" (click)="dismiss()">Not now</button>
+    </div>
+  </div>
+}
