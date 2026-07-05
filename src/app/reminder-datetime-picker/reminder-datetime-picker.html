@@ -1,0 +1,33 @@
+<div class="reminder-datetime-picker" [class.disabled]="disabled()">
+  <label class="reminder-date-label">
+    Date
+    <input
+      type="date"
+      class="reminder-date-input"
+      [disabled]="disabled()"
+      [value]="dateValue()"
+      (input)="onDateChange($event)"
+    />
+  </label>
+
+  <div class="reminder-time-label">Time</div>
+  <div class="reminder-time-wheels">
+    <app-wheel-picker
+      class="time-wheel"
+      [options]="hourOptions"
+      [disabled]="disabled()"
+      ariaLabel="Hour"
+      [ngModel]="hourValue()"
+      (ngModelChange)="onHourChange($event)"
+    />
+    <span class="time-separator" aria-hidden="true">:</span>
+    <app-wheel-picker
+      class="time-wheel"
+      [options]="minuteOptions"
+      [disabled]="disabled()"
+      ariaLabel="Minute"
+      [ngModel]="minuteValue()"
+      (ngModelChange)="onMinuteChange($event)"
+    />
+  </div>
+</div>

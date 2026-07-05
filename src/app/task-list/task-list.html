@@ -31,12 +31,19 @@
     <button type="button" class="btn btn-ghost" (click)="store.clearTasks()">Clear all</button>
   </div>
 
-  <div class="task-list" role="list">
+  <div
+    class="task-list"
+    cdkDropList
+    cdkDropListOrientation="vertical"
+    (cdkDropListDropped)="onTaskDrop($event)"
+    role="list"
+  >
     @for (task of store.tasks(); track task.id) {
       <app-task-item
         role="listitem"
         [task]="task"
         [position]="$index + 1"
+        [dragStartDelay]="dragStartDelay()"
         (toggle)="store.toggleTask($event)"
         (remove)="store.removeTask($event)"
         (edit)="store.editTask($event.id, $event.title)"

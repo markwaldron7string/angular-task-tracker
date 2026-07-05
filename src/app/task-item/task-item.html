@@ -5,11 +5,30 @@
     <button type="button" class="action-btn" (click)="cancelEditing()">Cancel</button>
   </div>
 } @else {
-  <label class="task-label">
-    <input class="task-checkbox" type="checkbox" [checked]="task().done" (change)="onToggle()" />
-    <span class="task-number">{{ position() }}.</span>
-    <span class="task-title" [class.done]="task().done">{{ task().title }}</span>
-  </label>
+  <div
+    class="task-drag-area"
+    cdkDragHandle
+    (pointerdown)="onPressStart($event)"
+    (pointerup)="onPressEnd()"
+    (pointercancel)="onPressEnd()"
+    (pointerleave)="onPressEnd()"
+  >
+    <span class="drag-handle" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false">
+        <circle cx="9" cy="7" r="1.4" />
+        <circle cx="15" cy="7" r="1.4" />
+        <circle cx="9" cy="12" r="1.4" />
+        <circle cx="15" cy="12" r="1.4" />
+        <circle cx="9" cy="17" r="1.4" />
+        <circle cx="15" cy="17" r="1.4" />
+      </svg>
+    </span>
+    <label class="task-label">
+      <input class="task-checkbox" type="checkbox" [checked]="task().done" (change)="onToggle()" />
+      <span class="task-number">{{ position() }}.</span>
+      <span class="task-title" [class.done]="task().done">{{ task().title }}</span>
+    </label>
+  </div>
   <div class="task-row-actions">
     <button
       type="button"
@@ -52,16 +71,11 @@
         Reminders on
       </label>
 
-      <label class="reminder-datetime-label">
-        Date &amp; time
-        <input
-          type="datetime-local"
-          class="reminder-datetime-input"
-          [disabled]="!draftEnabled()"
-          [value]="draftReminderAt()"
-          (input)="onDraftReminderAtChange($event)"
-        />
-      </label>
+      <app-reminder-datetime-picker
+        [disabled]="!draftEnabled()"
+        [ngModel]="draftReminderAt()"
+        (ngModelChange)="onDraftReminderAtChange($event)"
+      />
     </div>
   </div>
 }
